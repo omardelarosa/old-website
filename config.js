@@ -6,6 +6,6 @@ var config = {
 	localApiCache: 'aggregate.json',
 	bubbleType: 'plain',
     bubbleStyles: {
-        
+        'id': {}
     }
 };

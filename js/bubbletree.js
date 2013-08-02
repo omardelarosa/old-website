@@ -783,6 +783,17 @@ var BubbleTree = function(config, onHover, onUnHover) {
 		if ($.isFunction(me.config.nodeClickCallback)) {
 			me.config.nodeClickCallback(node);
 		}
+		// stuff that can be launched when node is clicked
+		//this is launched when node is clicked. 
+		// console.log(node)
+		if (node.url) {
+			window.open(node.url)
+		}
+		if (node.callback) {
+			// console.log(node.callback)
+			node.callback(node.label)
+		}
+		
 	};
 
 	// removes all nodes
