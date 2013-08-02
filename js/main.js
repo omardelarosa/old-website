@@ -10,12 +10,13 @@ $(function() {
         id: 'title icon-home icon-large',
         label: '',
         amount: 50,
-        color: '#FFFFFF',  // color for root node, will be inherited by children 
+        color: '#AA0000',  // color for root node, will be inherited by children 
         children: [
             { 
                 label: 'code', 
                 id: 'section_title icon-code icon-large',
                 amount: 20,
+                color: '#FFFFFF',
                 children: [
                     {
                         label: 'github', 
@@ -32,9 +33,56 @@ $(function() {
                 ]
             },
             { 
+                label: 'info', 
+                id: 'section_title icon-male icon-large',
+                amount: 20,
+                color: '#FFFFFF',
+                children: [
+                    {
+                        label: 'bio', 
+                        amount: 15,
+                        id: 'icon-book icon-large',
+                        color: '#AA0000'
+                    },
+                    {
+                        label: 'press', 
+                        amount: 15,
+                        id: 'icon-bullhorn icon-large',
+                        color: '#AA0000'
+                    },
+                    {
+                        label: 'writing', 
+                        amount: 15,
+                        id: 'icon-file-text icon-large',
+                        color: '#AA0000'
+                    }
+                ]
+            },
+            { 
+                label: 'photos', 
+                id: 'section_title icon-camera icon-large',
+                amount: 20,
+                color: '#FFFFFF',
+                children: [
+                    {
+                        label: 'instagram', 
+                        amount: 15,
+                        id: 'icon-instagram icon-large',
+                        color: '#AA0000'
+                    },
+                    {
+                        label: 'flickr', 
+                        amount: 15,
+                        id: 'icon-flickr icon-large',
+                        color: '#AA0000'
+                    }
+                ]
+            },
+            { 
                 label: 'music', 
                 id: 'section_title icon-music icon-large',
                 amount: 20,
+                color: '#FFFFFF',
                 children: [
                     {
                         label: 'solo',
@@ -52,7 +100,8 @@ $(function() {
             },
             {   
                 label: 'blogs',
-                amount: 20, 
+                amount: 20,
+                color: '#FFFFFF', 
                 id: 'section_title icon-file-text icon-large',
                 children: [
                     { 
@@ -74,12 +123,12 @@ $(function() {
                 label: 'contact', 
                 amount: 20, 
                 color: '#FFFFFF',
-                id: 'section_title icon-mail-reply-all icon-large',
+                id: 'section_title icon-envelope icon-large',
                 children: [
                     { 
                         label: 'email', 
                         amount: 15,
-                        id: 'icon-mail-reply icon-large',
+                        id: 'icon-envelope-alt icon-large',
                         color: '#AA0000'
                     },
                     { 
