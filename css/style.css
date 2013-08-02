@@ -1,3 +1,7 @@
+#smaller_page {
+    display: none;
+}
+
 #main_heading {
     background-color: #000000;
     color: #FFFFFF;
@@ -16,4 +20,124 @@
 .bubbletree .section_title {
     font-size: 15px;
     font-weight: bold;
+}
+
+@media (max-width: 720px) {
+    .bubbletree {
+        display: none;
+    }
+    #main_heading {
+        display: none;
+    }
+
+    #smaller_page {
+        display: block;
+    }
+
+    /* resetters etc */
+
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed, 
+    figure, figcaption, footer, header, hgroup, 
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+    }
+    /* HTML5 display-role reset for older browsers */
+    article, aside, details, figcaption, figure, 
+    footer, header, hgroup, menu, nav, section {
+        display: block;
+    }
+    body {
+        line-height: 1;
+    }
+    ol, ul {
+        list-style: none;
+    }
+    blockquote, q {
+        quotes: none;
+    }
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+        content: '';
+        content: none;
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    /* end resetter */
+
+    body {
+        font-family: Helvetica, sans-serif;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    #main_container {
+        width: 400px;
+        margin: 300px auto 0px auto;
+    }
+
+    #smaller_heading {
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+
+    }
+
+    #nav_container {
+        width:400px;
+    }
+
+    #nav_list {
+        list-style-type: none;
+        width: 400px;
+    }
+
+    #nav_list_2 {
+        list-style-type: none;
+        width: 400px;
+    }
+
+    .nav_list_item {
+        float: left;
+        width: 100px;
+        
+    }
+
+    .nav_list_item_link {
+        display: block;
+        width: 50px;
+        margin: 20px auto 0px auto;
+        
+    }
+
+    .footer {
+        margin: 40px 0px 0px 0px;
+        display: none;
+    }
+
+    #copyright {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+
 }

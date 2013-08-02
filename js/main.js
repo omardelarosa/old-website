@@ -1,3 +1,8 @@
+//smaller page function
+function footerToggle(){
+    $('.footer').toggle();
+};
+
 $(function() {
 
     //data
