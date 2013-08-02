@@ -1,0 +1,19 @@
+#main_heading {
+    background-color: #000000;
+    color: #FFFFFF;
+    font-family: Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 30px;
+    padding: 10px;
+}
+
+.bubbletree .title {
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 35px;
+}
+
+.bubbletree .section_title {
+    font-size: 15px;
+    font-weight: bold;
+}
