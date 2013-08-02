@@ -786,6 +786,7 @@ var BubbleTree = function(config, onHover, onUnHover) {
 		// stuff that can be launched when node is clicked
 		//this is launched when node is clicked. 
 		// console.log(node)
+		
 		if (node.url) {
 			window.open(node.url)
 		}
