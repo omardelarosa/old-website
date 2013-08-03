@@ -2,6 +2,23 @@ body {
     background-color: #000000;
 }
 
+#default_content {
+    display: none;
+}
+
+/* reset all content container styles */
+#content_body {
+    width: 365px;
+    height: 600px;
+    overflow: scroll;
+    margin-top: 20px;
+    color: white;
+}
+
+#headings {
+    height: 100px;
+}
+
 .bubbletree {
     position: relative;
     top: 0;

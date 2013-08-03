@@ -3,16 +3,35 @@ function footerToggle(){
     $('.footer').toggle();
 };
 
-function change_heading(heading_name){
+function change_heading(node){
+    set_content_text(' ')
     //default title
-    if (heading_name === "") {
+    if (node) {
+        heading_name = node.label
+    } else {
         heading_name = "developer / musician / etc"
     }
-
+    
     $('#sub_heading').html(heading_name);
 }
 
+function get_tumblr_page_json(section_name){
+    var section_name = section_name || 'about';
+    $('body').append('<script src="http://omardelarosa.tumblr.com/'+section_name+'/json"></script>');
+    
+    //this is an approximated network lag time
+    setTimeout(set_content_text,400);
+}
+
+function set_content_text(text){
+    var text = text || tumblr_api_read.posts[0]["regular-body"];
+    $('#content_body').html(text);
+}
+
 $(function() {
+
+    //default content becomes visible
+    setTimeout(function(){$('#default_content').show(100)},5000);
 
     //data
     var data = {
@@ -56,24 +75,33 @@ $(function() {
                         label: 'bio', 
                         amount: 15,
                         id: 'icon-book icon-large',
-                        color: '#AA0000'
+                        color: '#AA0000',
+                        callback: function(){
+                            get_tumblr_page_json('about');
+                        }
                     },
                     {
                         label: 'press', 
                         amount: 15,
                         id: 'icon-bullhorn icon-large',
-                        color: '#AA0000'
+                        color: '#AA0000',
+                        callback: function(){
+                            get_tumblr_page_json('press');
+                        }
                     },
                     {
                         label: 'writing', 
                         amount: 15,
                         id: 'icon-file-text icon-large',
-                        color: '#AA0000'
+                        color: '#AA0000',
+                        callback: function(){
+                            get_tumblr_page_json('writing');
+                        }
                     }
                 ]
             },
             { 
-                label: 'photos', 
+                label: 'media', 
                 id: 'section_title icon-camera icon-large',
                 amount: 20,
                 color: '#FFFFFF',
