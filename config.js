@@ -3,7 +3,7 @@ var config = {
 	dataset: 'berlin',
 	drilldowns: ['hauptfunktion', 'oberfunktion'],
 	cuts: ['year:2011'],
-	localApiCache: 'aggregate.json',
+	localApiCache: 'content.json',
 	bubbleType: 'plain',
     bubbleStyles: {
         'id': {}

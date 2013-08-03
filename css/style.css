@@ -2,6 +2,10 @@ body {
     background-color: #000000;
 }
 
+a {
+    color: red;
+}
+
 #default_content {
     display: none;
 }
