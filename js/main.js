@@ -193,7 +193,7 @@ function footerToggle(){
 function change_section(node){
     set_content_text(' ')
     //default title
-    var heading_name = node.label || "developer / musician / etc"
+    var heading_name = node == "" || node.label == "" ? "developer / musician / etc" : node.label;
 
     var body = node.body_html || " "
 
