@@ -15,7 +15,10 @@ var content = {
                 id: 'section_title icon-code icon-large',
                 amount: 20,
                 color: '#FFFFFF',
-                callback: change_section,
+                callback: function(node){
+                    change_section(node)
+                    get_tumblr_page_json("code")
+                },
                 children: [
                     {
                         label: 'github', 
@@ -38,7 +41,10 @@ var content = {
                 id: 'section_title icon-male icon-large',
                 amount: 20,
                 color: '#FFFFFF',
-                callback: change_section,
+                callback: function(node){
+                    change_section(node)
+                    get_tumblr_page_json("about")
+                },
                 children: [
                     {
                         label: 'bio', 
@@ -89,6 +95,13 @@ var content = {
                         id: 'icon-flickr icon-large link',
                         color: '#AA0000',
                         url: "http://www.flickr.com/photos/48006331@N07/"
+                    },
+                    {
+                        label: 'youtube', 
+                        amount: 15,
+                        id: 'icon-youtube icon-large link',
+                        color: '#AA0000',
+                        url: "http://www.youtube.com/warmturkey"
                     }
                 ]
             },
@@ -97,7 +110,10 @@ var content = {
                 id: 'section_title icon-music icon-large',
                 amount: 20,
                 color: '#FFFFFF',
-                callback: change_section,
+                callback: function(node){
+                    change_section(node)
+                    get_tumblr_page_json("about","littleinsects.com")
+                },
                 children: [
                     {
                         label: 'solo',
@@ -201,9 +217,10 @@ function change_section(node){
     $('#content_body').html(body);
 }
 
-function get_tumblr_page_json(section_name){
+function get_tumblr_page_json(section_name,tumblr_url){
+    var tumblr_url = tumblr_url || "omardelarosa.tumblr.com"
     var section_name = section_name || 'about';
-    $('body').append('<script src="http://omardelarosa.tumblr.com/'+section_name+'/json"></script>');
+    $('body').append('<script src="http://'+tumblr_url+'/'+section_name+'/json"></script>');
     
     //this is an approximated network lag time
     setTimeout(set_content_text,500);
