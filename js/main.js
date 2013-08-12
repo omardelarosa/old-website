@@ -1,4 +1,14 @@
 // =====================================
+// ========= GLOBAL VARIBLES ===========
+// =====================================
+
+// a public alias to main tree object.
+
+var TREE;
+
+var last_clicked_node;
+
+// =====================================
 // ======= Load Content As JSON ========
 // =====================================
 
@@ -226,22 +236,64 @@ function get_tumblr_page_json(section_name,tumblr_url){
     setTimeout(set_content_text,500);
 }
 
-function set_content_text(text){
-
+function set_content_text(text,attempt_index){
+    var attempt_index = attempt_index || 0;
     //gets body text either from func argument or tumblr
     var text = text || function(){
-        try {
-            return tumblr_api_read.posts[0]["regular-body"]
-        } catch(error) {
-            console.log("Loading...");
-            setTimeout(function(){
-                set_content_text(text)
-            },500)
+        if (attempt_index < 15) {
+            try {
+                return tumblr_api_read.posts[0]["regular-body"]
+            } catch(error) {
+                // console.log(error)
+                if (attempt_index < 1) {
+                    console.log("Loading...");
+                }
+                attempt_index += 1;
+                //console.log("Attempt Index: ",attempt_index)
+                setTimeout(function(){
+                    set_content_text(text,attempt_index)
+                },500)
+            }
+        } else {
+            //replace with alt error message soon
+            return TREE.error_messages.connection_failure
         }
     }
 
     $('#content_body').html(text);
     tumblr_api_read = ""
+}
+
+function go_to_home_node(){
+
+}
+
+function go_to_left_node(){
+    //moves to the left node
+
+    //checks if current node is not "home"
+    if (TREE.currentCenter.label !== "") {
+        TREE.navigateTo(TREE.currentCenter.right)
+    } else {
+        //or moves to first child of center node.
+        TREE.navigateTo(TREE.currentCenter.children[0])
+    }
+    //returns the new center node.
+    return TREE.currentCenter
+}
+
+function go_to_right_node(){
+    //moves to right node
+
+    //checks if current node is not "home"
+    if (TREE.currentCenter.label !== "") {
+        TREE.navigateTo(TREE.currentCenter.right)
+    } else {
+        //or moves to first child of center node.
+        TREE.navigateTo(TREE.currentCenter.children[0])
+    }
+    //returns the new center node.
+    return TREE.currentCenter
 }
 
 // =====================================
@@ -255,13 +307,16 @@ $(function() {
     
     var config = {
         localApiCache: 'content.json',
-
     };
 
-    new BubbleTree({
+    TREE = new BubbleTree({
         data: content,
         container: '.bubbletree',
-        config: config
+        config: config,
     });
+
+    TREE.error_messages = {
+            connection_failure: "" //need to add messaging here soon.
+        }
     
 });

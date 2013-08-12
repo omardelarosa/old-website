@@ -304,6 +304,10 @@ var BubbleTree = function(config, onHover, onUnHover) {
 		if (me.currentCenter) {
 			me.changeView(me.currentCenter.urlToken);
 		}
+
+		//Future home of post-resize logic
+		// debug
+		//console.log("Resized!")
 	};
 
 	/*
@@ -730,6 +734,7 @@ var BubbleTree = function(config, onHover, onUnHover) {
 		} else {
 			me.changeUrl();
 		}
+
 	};
 
 	/*
@@ -737,8 +742,11 @@ var BubbleTree = function(config, onHover, onUnHover) {
 	 */
 	me.changeUrl = function() {
 		var me = this, parts = me.freshUrl.split('/'), token = parts[parts.length-1], url;
+		//gets the pieces of the URL
+		var urlParts = me.freshUrl.split('/~/');
+		//string denoting name of current section
+		
 
-		// var urlParts = me.freshUrl.split('/~/');
 		if (me.freshUrl === "") me.navigateTo(me.treeRoot);
 
 		if (me.nodesByUrlToken.hasOwnProperty(token)) {
@@ -752,6 +760,13 @@ var BubbleTree = function(config, onHover, onUnHover) {
 		} else {
 			me.navigateTo(me.treeRoot);
 		}
+
+		//The place to add Tumblr Fetch logic for URL changing
+		//console.log("Url Has Changed")
+		var section_name = me.currentCenter.label;
+		get_tumblr_page_json(section_name);
+		//console.log(urlParts)
+		//console.log(me.currentCenter.label)
 	};
 
 	me.navigateTo = function(node, fromUrlChange) {
@@ -794,7 +809,9 @@ var BubbleTree = function(config, onHover, onUnHover) {
 			// console.log(node.callback)
 			node.callback(node)
 		}
-		
+		// debug
+		// console.log(node)
+		// last_clicked_node = node;
 	};
 
 	// removes all nodes
