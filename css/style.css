@@ -13,7 +13,7 @@ a {
 /* reset all content container styles */
 #content_body {
     width: 365px;
-    height: 600px;
+    height: 500px;
     overflow: scroll;
     margin-top: 20px;
     color: white;
@@ -94,7 +94,137 @@ a {
     font-weight: bold;
 }
 
-@media (max-width: 720px) {
+/* iPhone Style */
+@media only screen and (min-device-width : 320px) and (max-device-width : 568px) { 
+
+.bubbletree {
+        display: none;
+    }
+    #content_container {
+        display: none;
+    }
+
+    #smaller_page {
+        display: block;
+    }
+
+    /* resetters etc */
+
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed, 
+    figure, figcaption, footer, header, hgroup, 
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+    }
+    /* HTML5 display-role reset for older browsers */
+    article, aside, details, figcaption, figure, 
+    footer, header, hgroup, menu, nav, section {
+        display: block;
+    }
+    body {
+        line-height: 1;
+    }
+    ol, ul {
+        list-style: none;
+    }
+    blockquote, q {
+        quotes: none;
+    }
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+        content: '';
+        content: none;
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    /* end resetter */
+
+    body {
+        font-family: Helvetica, sans-serif;
+        color: #FFFFFF;
+    }
+
+    a {
+        color: #FFFFFF;
+        text-decoration: none;
+        margin-left: 10px;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    #main_container {
+        width: 400px;
+        margin: 300px auto 0px auto;
+    }
+
+    #smaller_heading {
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+
+    }
+
+    #nav_container {
+        width:400px;
+    }
+
+    #nav_list {
+        list-style-type: none;
+        width: 400px;
+    }
+
+    #nav_list_2 {
+        list-style-type: none;
+        width: 400px;
+    }
+
+    .nav_list_item {
+        float: left;
+        width: 100px;
+        
+    }
+
+    .nav_list_item_link {
+        display: block;
+        width: 50px;
+        margin: 20px auto 0px auto;
+        
+    }
+
+    .footer {
+        margin: 40px 0px 0px 0px;
+        display: none;
+    }
+
+    #copyright {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+
+}
+
+@media (max-height: 800px) and (max-width: 960px) {
+    
     .bubbletree {
         display: none;
     }
@@ -219,4 +349,130 @@ a {
     }
 
 
+}
+
+@media (max-height: 480px) {
+
+    .bubbletree {
+        display: none;
+    }
+    #content_container {
+        display: none;
+    }
+
+    #smaller_page {
+        display: block;
+    }
+
+    /* resetters etc */
+
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed, 
+    figure, figcaption, footer, header, hgroup, 
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+    }
+    /* HTML5 display-role reset for older browsers */
+    article, aside, details, figcaption, figure, 
+    footer, header, hgroup, menu, nav, section {
+        display: block;
+    }
+    body {
+        line-height: 1;
+    }
+    ol, ul {
+        list-style: none;
+    }
+    blockquote, q {
+        quotes: none;
+    }
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+        content: '';
+        content: none;
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    /* end resetter */
+
+    body {
+        font-family: Helvetica, sans-serif;
+        color: #FFFFFF;
+    }
+
+    a {
+        color: #FFFFFF;
+        text-decoration: none;
+        margin-left: 10px;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    #main_container {
+        width: 400px;
+        margin: 150px auto 0px auto;
+    }
+
+    #smaller_heading {
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+
+    }
+
+    #nav_container {
+        width:400px;
+    }
+
+    #nav_list {
+        list-style-type: none;
+        width: 400px;
+    }
+
+    #nav_list_2 {
+        list-style-type: none;
+        width: 400px;
+    }
+
+    .nav_list_item {
+        float: left;
+        width: 100px;
+        
+    }
+
+    .nav_list_item_link {
+        display: block;
+        width: 50px;
+        margin: 20px auto 0px auto;
+        
+    }
+
+    .footer {
+        margin: 40px 0px 0px 0px;
+        display: none;
+    }
+
+    #copyright {
+        margin-top: 20px;
+        text-align: center;
+    }
 }

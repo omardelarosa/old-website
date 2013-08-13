@@ -761,12 +761,10 @@ var BubbleTree = function(config, onHover, onUnHover) {
 			me.navigateTo(me.treeRoot);
 		}
 
-		//The place to add Tumblr Fetch logic for URL changing
-		//console.log("Url Has Changed")
-		var section_name = me.currentCenter.label;
-		get_tumblr_page_json(section_name);
-		//console.log(urlParts)
-		//console.log(me.currentCenter.label)
+		//if there's a callback function on the node, calls it.  else blanks out content text
+		if (me.currentCenter) {
+			me.currentCenter.callback ? me.currentCenter.callback(me) : O.set_content_text(' ');
+		}
 	};
 
 	me.navigateTo = function(node, fromUrlChange) {
@@ -784,14 +782,17 @@ var BubbleTree = function(config, onHover, onUnHover) {
 	 * creates a valid url for a given node, e.g. /2010/health/medical-supplies
 	 */
 	me.getUrlForNode = function(node) {
-		var parts = [];
-		parts.push(node.urlToken);
-		while (node.parent) {
-			parts.push(node.parent.urlToken);
-			node = node.parent;
-		}
-		parts.reverse();
-		return me.baseUrl+'/~/'+parts.join('/');
+		if (node.urlToken) {
+			var parts = [];
+			parts.push(node.urlToken);
+			while (node.parent) {
+				parts.push(node.parent.urlToken);
+				node = node.parent;
+			}
+			parts.reverse();
+			return me.baseUrl+'/~/'+parts.join('/');
+		};
+		
 	};
 
 	me.onNodeClick = function(node) {
@@ -799,16 +800,19 @@ var BubbleTree = function(config, onHover, onUnHover) {
 			me.config.nodeClickCallback(node);
 		}
 		// stuff that can be launched when node is clicked
-		//this is launched when node is clicked. 
+		// this is launched when node is clicked. 
 		// console.log(node)
 
 		if (node.url) {
+			//goes to the link url of node
 			window.open(node.url)
 		}
-		if (node.callback) {
-			// console.log(node.callback)
-			node.callback(node)
-		}
+
+		// if callbacks need to be handled by click...
+		// if (node.callback) {
+		// 	// console.log(node.callback)
+		// 	//node.callback(node)
+		// }
 		// debug
 		// console.log(node)
 		// last_clicked_node = node;

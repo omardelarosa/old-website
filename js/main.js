@@ -2,21 +2,22 @@
 // ========= GLOBAL VARIBLES ===========
 // =====================================
 
-// a public alias to main tree object.
+// a public alias object for encapsulation purposes.
+var O = O ? O : {};
 
-var TREE;
-
-var last_clicked_node;
+// var last_clicked_node;
 
 // =====================================
 // ======= Load Content As JSON ========
 // =====================================
 
-var content = {
+
+//load the content as JSON
+O.content = {
         id: 'title icon-home icon-large',
         label: '',
         amount: 50,
-        callback: change_section,
+        callback: O.change_section,
         body_html: "<div id='default_content' style='display:block'><br><br><br><br><br><br><br><br><br><br><br><br><br><br><span class='icon-long-arrow-left icon-large'/><span>  click the bubbles to get started.</div>",
         color: '#AA0000',  // color for root node, will be inherited by children 
         children: [
@@ -26,8 +27,8 @@ var content = {
                 amount: 20,
                 color: '#FFFFFF',
                 callback: function(node){
-                    change_section(node)
-                    get_tumblr_page_json("code")
+                    O.change_section(node)
+                    O.get_tumblr_page_json("code")
                 },
                 children: [
                     {
@@ -52,8 +53,8 @@ var content = {
                 amount: 20,
                 color: '#FFFFFF',
                 callback: function(node){
-                    change_section(node)
-                    get_tumblr_page_json("about")
+                    O.change_section(node)
+                    O.get_tumblr_page_json("about")
                 },
                 children: [
                     {
@@ -62,7 +63,7 @@ var content = {
                         id: 'icon-book icon-large link',
                         color: '#AA0000',
                         callback: function(){
-                            get_tumblr_page_json('about');
+                            O.get_tumblr_page_json('about');
                         }
                     },
                     {
@@ -71,7 +72,7 @@ var content = {
                         id: 'icon-bullhorn icon-large link',
                         color: '#AA0000',
                         callback: function(){
-                            get_tumblr_page_json('press');
+                            O.get_tumblr_page_json('press');
                         }
                     },
                     {
@@ -80,7 +81,7 @@ var content = {
                         id: 'icon-file-text icon-large link',
                         color: '#AA0000',
                         callback: function(){
-                            get_tumblr_page_json('writing');
+                            O.get_tumblr_page_json('writing');
                         }
                     }
                 ]
@@ -90,7 +91,7 @@ var content = {
                 id: 'section_title icon-camera icon-large',
                 amount: 20,
                 color: '#FFFFFF',
-                callback: change_section,
+                callback: O.change_section,
                 children: [
                     {
                         label: 'instagram', 
@@ -121,8 +122,8 @@ var content = {
                 amount: 20,
                 color: '#FFFFFF',
                 callback: function(node){
-                    change_section(node)
-                    get_tumblr_page_json("about","littleinsects.com")
+                    O.change_section(node)
+                    O.get_tumblr_page_json("about","littleinsects.com")
                 },
                 children: [
                     {
@@ -145,7 +146,7 @@ var content = {
                 label: 'blogs',
                 amount: 20,
                 color: '#FFFFFF',
-                callback: change_section, 
+                callback: O.change_section, 
                 id: 'section_title icon-file-text icon-large',
                 children: [
                     { 
@@ -169,7 +170,7 @@ var content = {
                 label: 'contact', 
                 amount: 20, 
                 color: '#FFFFFF',
-                callback: change_section,
+                callback: O.change_section,
                 id: 'section_title icon-envelope icon-large',
                 children: [
                     { 
@@ -212,12 +213,11 @@ var content = {
 
 
 //smaller page function
-function footerToggle(){
-    $('.footer').toggle();
-};
 
-function change_section(node){
-    set_content_text(' ')
+
+
+O.change_section = function(node){
+    O.set_content_text(' ')
     //default title
     var heading_name = node == "" || node.label == "" ? "developer / musician / etc" : node.label;
 
@@ -225,18 +225,21 @@ function change_section(node){
 
     $('#sub_heading').html(heading_name);
     $('#content_body').html(body);
+
+    //resets children left to visit
+    O.status.children_left_to_visit = O.tree.currentCenter.children.length || 0;
 }
 
-function get_tumblr_page_json(section_name,tumblr_url){
+O.get_tumblr_page_json = function(section_name,tumblr_url){
     var tumblr_url = tumblr_url || "omardelarosa.tumblr.com"
     var section_name = section_name || 'about';
     $('body').append('<script src="http://'+tumblr_url+'/'+section_name+'/json"></script>');
     
     //this is an approximated network lag time
-    setTimeout(set_content_text,500);
+    setTimeout(O.set_content_text,500);
 }
 
-function set_content_text(text,attempt_index){
+O.set_content_text = function(text,attempt_index){
     var attempt_index = attempt_index || 0;
     //gets body text either from func argument or tumblr
     var text = text || function(){
@@ -251,12 +254,12 @@ function set_content_text(text,attempt_index){
                 attempt_index += 1;
                 //console.log("Attempt Index: ",attempt_index)
                 setTimeout(function(){
-                    set_content_text(text,attempt_index)
+                    O.set_content_text(text,attempt_index)
                 },500)
             }
         } else {
             //replace with alt error message soon
-            return TREE.error_messages.connection_failure
+            return O.tree.error_messages.connection_failure
         }
     }
 
@@ -264,36 +267,104 @@ function set_content_text(text,attempt_index){
     tumblr_api_read = ""
 }
 
-function go_to_home_node(){
+//experimental stuff
+
+O.footerToggle = function(){
+    $('.footer').toggle();
+};
+
+
+//a place to hold non-static global
+O.status = {
+    children_left_to_visit : 0
+}
+
+O.change_section_outward = function (){
+    
+    if(O.tree.currentCenter.parent) {
+       O.tree.navigateTo(O.tree.currentCenter.parent) 
+    }
 
 }
 
-function go_to_left_node(){
+O.change_section_inward = function (){
+
+    if (O.tree.currentCenter.children.length > 0) {
+        O.tree.navigateTo(O.tree.currentCenter.children[0])
+    } else {
+        O.change_section_down();
+    }
+    
+
+}
+
+O.change_section_up = function(){
     //moves to the left node
 
     //checks if current node is not "home"
-    if (TREE.currentCenter.label !== "") {
-        TREE.navigateTo(TREE.currentCenter.right)
+    if (O.tree.currentCenter.label !== "") {
+        O.tree.navigateTo(O.tree.currentCenter.right)
     } else {
         //or moves to first child of center node.
-        TREE.navigateTo(TREE.currentCenter.children[0])
+        O.tree.navigateTo(O.tree.currentCenter.children[0])
     }
     //returns the new center node.
-    return TREE.currentCenter
+    return O.tree.currentCenter
 }
 
-function go_to_right_node(){
+O.change_section_down = function(){
     //moves to right node
 
     //checks if current node is not "home"
-    if (TREE.currentCenter.label !== "") {
-        TREE.navigateTo(TREE.currentCenter.right)
+    if (O.tree.currentCenter.label !== "") {
+        O.tree.navigateTo(O.tree.currentCenter.right)
     } else {
         //or moves to first child of center node.
-        TREE.navigateTo(TREE.currentCenter.children[0])
+        O.tree.navigateTo(O.tree.currentCenter.children[0])
     }
     //returns the new center node.
-    return TREE.currentCenter
+    return O.tree.currentCenter
+}
+
+O.set_keyboard_bindings = function(){
+
+    //set left keydown behavior
+    $(document).keydown(function(e){
+        if (e.keyCode == 38) { 
+           O.change_section_up()
+           return false;
+        }
+    });
+
+    //set right keydown behavior
+    $(document).keydown(function(e){
+        if (e.keyCode == 40) { 
+           O.change_section_down()
+           return false;
+        }
+    });
+
+    //set right keydown behavior
+    $(document).keydown(function(e){
+        if (e.keyCode == 39) { 
+           O.change_section_inward()
+           return false;
+        }
+    });
+
+    //set left keydown behavior
+    $(document).keydown(function(e){
+        if (e.keyCode == 37) { 
+           O.change_section_outward()
+           return false;
+        }
+    });
+}
+
+O.window_change_handler = function(){
+    $(window).resize(function(e) {
+        //coming soon.
+    });
 }
 
 // =====================================
@@ -309,14 +380,17 @@ $(function() {
         localApiCache: 'content.json',
     };
 
-    TREE = new BubbleTree({
-        data: content,
+    O.tree = new BubbleTree({
+        data: O.content,
         container: '.bubbletree',
         config: config,
     });
 
-    TREE.error_messages = {
+    O.tree.error_messages = {
             connection_failure: "" //need to add messaging here soon.
         }
+
+    //set key bindings
+    O.set_keyboard_bindings();
     
 });
