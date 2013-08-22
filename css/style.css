@@ -14,7 +14,7 @@ a {
 #content_body {
     width: 365px;
     height: 500px;
-    overflow: scroll;
+    overflow: hidden;
     margin-top: 20px;
     color: white;
 }

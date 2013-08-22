@@ -257,6 +257,9 @@ O.set_content_text = function(text,attempt_index){
     }
 
     $('#content_body').html(text);
+    $('#content_body').css({
+        "overflow":"scroll"
+    })
     tumblr_api_read = ""
 }
 
