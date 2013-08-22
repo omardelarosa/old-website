@@ -2,7 +2,7 @@
 // ========= GLOBAL VARIBLES ===========
 // =====================================
 
-// a public alias object for encapsulation purposes.
+// a global object for encapsulation purposes.
 var O = O ? O : {};
 
 // var last_clicked_node;
