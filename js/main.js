@@ -211,6 +211,19 @@ O.content = {
 // ===== GLOBAL HELPER FUNCTIONS =======
 // =====================================
 
+O.get_tree = function(){
+
+    //if screen is large enough and there is no tree
+    if (window.document.width > 960 && window.document.height > 480 && !O.tree) {
+        //make bubble tree
+        O.tree = new BubbleTree({
+            data: O.content,
+            container: '.bubbletree'
+        });
+    }
+
+}
+
 O.change_section = function(node){
     O.set_content_text(' ')
     //default title
@@ -220,6 +233,9 @@ O.change_section = function(node){
 
     $('#sub_heading').html(heading_name);
     $('#content_body').html(body);
+    $('#content_body').css({
+        "overflow":"hidden"
+    })
 
 }
 
@@ -257,9 +273,7 @@ O.set_content_text = function(text,attempt_index){
     }
 
     $('#content_body').html(text);
-    $('#content_body').css({
-        "overflow":"scroll"
-    })
+    $('#content_body').mCustomScrollbar();
     tumblr_api_read = ""
 }
 
@@ -317,7 +331,7 @@ O.change_section_down = function(){
     return O.tree.currentCenter
 }
 
-O.set_keyboard_bindings = function(){
+O.set_initial_event_bindings = function(){
 
     //set left keydown behavior
     $(document).keydown(function(e){
@@ -350,6 +364,12 @@ O.set_keyboard_bindings = function(){
            return false;
         }
     });
+
+    //if window is resized from a smaller viewport to a large enough viewport, attempt to build a tree
+    $(window).resize(function() {
+        //if window is large enough
+        O.get_tree();
+    });
 }
 
 // =====================================
@@ -360,18 +380,11 @@ $(function() {
 
     //default content becomes visible
     setTimeout(function(){$('#default_content').show(100)},5000);
-    
-    var config = {
-        localApiCache: 'content.json',
-    };
 
-    O.tree = new BubbleTree({
-        data: O.content,
-        container: '.bubbletree',
-        config: config,
-    });
+    //attempt to get a node tree
+    O.get_tree();
 
     //set key bindings
-    O.set_keyboard_bindings();
-    
+    O.set_initial_event_bindings();
+
 });

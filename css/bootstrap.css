@@ -204,7 +204,7 @@ input::-moz-focus-inner {
 }
 
 textarea {
-  overflow: auto;
+  /*overflow: auto;*/
   vertical-align: top;
 }
 
@@ -712,7 +712,7 @@ pre code {
 
 .pre-scrollable {
   max-height: 340px;
-  overflow-y: scroll;
+  /*overflow-y: scroll;*/
 }
 
 .container {
@@ -2965,7 +2965,7 @@ button.close {
   .nav-collapse.collapse {
     display: block !important;
     height: auto !important;
-    overflow: visible !important;
+    /*overflow: visible !important;*/
   }
 }
 
@@ -3362,8 +3362,8 @@ button.close {
   left: 0;
   z-index: 1040;
   display: none;
-  overflow: auto;
-  overflow-y: scroll;
+  /*overflow: auto;*/
+  /*overflow-y: scroll;*/
 }
 
 .modal.fade .modal-dialog {
