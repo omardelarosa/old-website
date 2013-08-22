@@ -211,11 +211,6 @@ O.content = {
 // ===== GLOBAL HELPER FUNCTIONS =======
 // =====================================
 
-
-//smaller page function
-
-
-
 O.change_section = function(node){
     O.set_content_text(' ')
     //default title
@@ -226,8 +221,6 @@ O.change_section = function(node){
     $('#sub_heading').html(heading_name);
     $('#content_body').html(body);
 
-    //resets children left to visit
-    O.status.children_left_to_visit = O.tree.currentCenter.children.length || 0;
 }
 
 O.get_tumblr_page_json = function(section_name,tumblr_url){
@@ -273,11 +266,6 @@ O.footerToggle = function(){
     $('.footer').toggle();
 };
 
-
-//a place to hold non-static global
-O.status = {
-    children_left_to_visit : 0
-}
 
 O.change_section_outward = function (){
     
@@ -361,12 +349,6 @@ O.set_keyboard_bindings = function(){
     });
 }
 
-O.window_change_handler = function(){
-    $(window).resize(function(e) {
-        //coming soon.
-    });
-}
-
 // =====================================
 // ====== ONLOAD FUNCTION CALLS ========
 // =====================================
@@ -385,10 +367,6 @@ $(function() {
         container: '.bubbletree',
         config: config,
     });
-
-    O.tree.error_messages = {
-            connection_failure: "" //need to add messaging here soon.
-        }
 
     //set key bindings
     O.set_keyboard_bindings();
