@@ -1,0 +1,23 @@
+body {
+	background:#fff;
+	margin: 0px auto auto 0px;
+	padding: 0px 0px 0px 0px;
+	font-family:Helvetica, Arial, Verdana;
+}
+
+
+#header {
+	border: 0px solid;
+	position: relative;
+}
+
+
+.hidden {
+	opacity:0.4;
+}
+
+.huge {
+	text-size:7em;
+	text-style:strong;
+
+}

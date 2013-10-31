@@ -1,0 +1,107 @@
+body {
+font-family:"Helvetica";
+font-size:15px;
+color:#000000;
+background-color:red;
+
+}
+
+#navbar ul {
+padding:0px 0px 0px 0px;
+margin: 0px 0px 0px 0px;
+border: 0px;
+float:left;
+display:inline;
+list-style-type:none;
+width:100px;                /*  must agree with #navbar li width property  */
+
+}
+
+#navbar li {
+padding:0px 0px 0px 0px;
+margin: 0px 0px 0px 0px;
+border: 0px;
+width:100px;
+height: 20px;
+color: #000000;
+text-align:center;
+float:left;
+background-color:#FFFFFF;	/*  background color of individual menu items   */
+}
+
+
+#navbar
+{ 
+z-index:1;
+list-style-type:none;
+padding:0px 0px 0px 0px;
+margin: 0px 0px 0px 0px;
+
+}
+
+
+#navbar ul ul
+{ 
+z-index-:2;
+text-align:center;
+list-style-type:none;
+width:100px;			 /*  must agree with #navbar li width property  */
+}
+
+
+.overflow			/* hidden menu items */
+{
+z-index:4;
+position:relative;
+left:0px;			/*  must be 1/2 of #navbar li width property  */
+top:3px;			/*  must be ????? of #navbar li width property  */
+display:none;
+}
+
+.expandable			/* a menu item with its own sub-menu */
+{
+position:relative;
+background:url('images/triangle.gif');
+background-repeat:no-repeat;
+background-attachment:relative;
+background-position: right center; 
+}
+
+.selectedExpandable			/* a menu item with its own sub-menu */
+{
+position:relative;
+background:url('images/triangle-selected.gif');
+background-repeat:no-repeat;
+background-attachment:relative;
+background-position: right center; 
+}
+
+.selected
+{
+background-color:#000000;
+color:#FFFFFF;
+}
+
+.sub				/* a menu item within a 1st level sub-menu */
+{
+z-index:4;
+position:relative;
+left:50px;			 /*  must be 1/2 of #navbar li width property  */
+top:-8.5px;			 /*  must be ????? of #navbar li width property  */
+display:none;
+}
+
+.sub2				/* a menu item within a 2nd-level sub-menu */
+{
+z-index:4;
+position:relative;
+left:50px;			/*  must be 1/2 of #navbar li width property  */
+top:-8.5px;			/*  must be ????? of #navbar li width property  */
+display:none;
+}
+
+/*
+.sub .expandable			
+{
+left:50px;
+} */

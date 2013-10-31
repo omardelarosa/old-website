@@ -1,0 +1,84 @@
+
+/* ----- to do list-----
+
+	-add photo looping element
+	-add CSS styles to make photo huge
+	-add search box function for variable tags, etc.
+
+
+*/
+
+$(document).ready(function(){  
+
+//--------- Part 0 - create search boxes for tags and size of puzzle ---
+
+// ---------Part 1 - start random cat photo generator --------------- //
+
+	$('#boxes').sortable();
+
+	$.getJSON("http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=5a9d178ee5cdafa70a42ab24c9487d9a&tags=birds&format=json&nojsoncallback=1",function(data){
+
+//	console.log(data);
+
+	var index = Math.floor((Math.random()*100)+1);  //finds random integer btwn 1-100
+
+	var farmId = data.photos.photo[index].farm;
+	var serverId = data.photos.photo[index].server;
+	var id = data.photos.photo[index].id;
+	var secret = data.photos.photo[index].secret;     //binds photo URL elements to variables
+
+//	console.log(farmId,serverId,id,secret);
+
+	var imgUrl = "http://farm"+farmId+".staticflickr.com/"+serverId+"/"+id+"_"+secret+".jpg";
+
+	$('#wrapper div').attr('style','background-repeat:no-repeat;background-image:url('+imgUrl+');background-size:600px 600px;');
+
+/*	$("#wrapper", function(){
+            $("<img/>").attr("src", "http://farm"+farmId+".staticflickr.com/"+serverId+"/"+id+"_"+secret+".jpg").appendTo("#container");        
+	});
+	$('img').height("600px");
+	$('img').width("600px");
+
+*/
+	
+});
+
+
+//----------- end random cat photo generator ---------- //
+
+//----------- Part 2 - assign image's sprite coordinates to DIVs----
+
+/*
+
+box# = (left, top)
+
+box 1 = 0,0
+box 2 = 200,0
+box 3 = 400,0
+box 4 = 0,200
+box 5 = 200,200
+box 6 = 400,200
+box 7 = 0,400
+box 8 = 200,400
+box 9 = 400,400
+
+box 1 - box 2 - box 3
+
+box 4 - box 5 - box 6
+
+box 7 - box 8 - box 9
+
+*/
+
+
+//----------- Part 3 - randomize assortment of DIVs
+
+//----------- Part 4 - determine conditions of winning ---- //
+
+
+//	$('#boxes ul li div:eq(1)').
+
+
+//-----------
+
+});

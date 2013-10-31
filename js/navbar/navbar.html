@@ -1,0 +1,132 @@
+<!DOCTYPE "HTML">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+		<script src="navbar.js"></script>
+		<title>navbar test</title>
+
+
+	</head>
+	<body>
+		<div id="wrapper">
+
+		<ul id="navbar">
+
+<!-------------------
+
+Naming logic of nested menus:
+
+0th-level = generic li elements
+1st-level = .overflow added
+2nd-level = .sub added
+3rd-level = .sub2 added
+nth-level = .sub(n-1) added
+
+expandable  s = .expandable class
+
+-------------------->
+
+			<ul id="0">
+				<li id="0"> b1 1 <!---- 1st main menu   ---->
+				<ul> 						<!---- 1st main menu overflow  s ---->
+				<li class="overflow">b1 2</li>
+				<li class="overflow">b1 3</li>
+				</ul>						<!---- end 1st main menu overflow  s ---->
+				</li> 							<!---- end 1st main menu all  s ---->
+			</ul>
+				
+			<ul id="1" >
+				<li id="1">b2 1 <!---- 2nd main menu   ---->
+				<ul> 						<!---- 2nd main menu overflow  s ---->
+					<li id="1" class="overflow expandable">b2 2
+					<ul class="sub">
+					<li class="sub">b2 2sub1</li>
+					<li id="1" class="  sub expandable">b2 2sub2 sfgsdfgsgfdgsfd
+						<ul class="sub2">
+						<li id="1" class="  sub2">b3 2sub3sub1</li>
+						<li id="1" class="  sub2">b3 2sub3sub2 sdfggfsdsdgffgsdsdgf s</li>
+						<li id="1" class="  sub2">b3 2sub3sub3</li>
+						<li id="1" class="  sub2">b3 2sub3sub4</li>
+						</ul>
+					</li>
+					</ul>
+				</li>
+				<li class="overflow">b2 3</li>
+				</ul>					<!---- end 2nd main menu overflow  s ---->
+				</li>					<!---- end 2nd main menu all  s ---->
+			</ul>
+			
+			<ul id="2" >
+				<li id="2">b3 1 <!---- 2nd main menu   ---->
+				<ul> 						<!---- 2nd main menu overflow  s ---->
+					<li id="2" class="overflow expandable">b3 2&nbsp;
+					<ul class="sub">
+					<li class="sub">b3 2sub1</li>
+					<li class="sub">b3 2sub2</li>
+					<li id="2" class="sub expandable">b3 2sub3
+						<ul class="sub2">
+						<li id="2" class="sub2">b3 2sub3sub1</li>
+						<li id="2" class="sub2">b3 2sub3sub2</li>
+						<li id="2" class="sub2">b3 2sub3sub3</li>
+						<li id="2" class="sub2">b3 2sub3sub4</li>
+					</ul>
+					</li>
+					</ul>
+				</li>
+				<li class="overflow">b3 3</li>
+				<li class="overflow">b3 4</li>
+				<li class="overflow">b3 5</li>
+				</ul>					<!---- end 2nd main menu overflow  s ---->
+				</li>					<!---- end 2nd main menu all  s ---->
+			</ul>
+						
+			<ul id="3" >
+				<li id="3">b4 1 <!---- 2nd main menu   ---->
+				<ul> 						<!---- 2nd main menu overflow  s ---->
+					<li id="3" class="overflow expandable">b4 2&nbsp;
+					<ul class="sub">
+					<li class="sub">b4 2sub1</li>
+					<li class="sub">b4 2sub2</li>
+					</ul>
+				</li>
+				<li class="overflow">b4 3</li>
+				</ul>					<!---- end 2nd main menu overflow  s ---->
+				</li>					<!---- end 2nd main menu all  s ---->
+			</ul>
+			
+			<ul id="4" >
+				<li id="4" class=" ">b5 1 <!---- 2nd main menu   ---->
+				<ul> 						<!---- 2nd main menu overflow  s ---->
+					<li id="4" class="  overflow expandable">b5 2&nbsp;
+					<ul class="sub">
+					<li class="sub">b5 2sub1</li>
+					<li class="sub">b2 2sub2</li>
+					</ul>
+				</li>
+				<li class="  overflow">b5 3</li>
+				</ul>					<!---- end 2nd main menu overflow  s ---->
+				</li>					<!---- end 2nd main menu all  s ---->
+			</ul>
+			
+
+			<ul id="5" >
+				<li id="5" class=" ">b6 1 <!---- 2nd main menu   ---->
+				<ul> 						<!---- 2nd main menu overflow  s ---->
+					<li id="5" class="  overflow expandable">b6 2&nbsp;
+					<ul class="sub">
+					<li class="sub">b6 2sub1</li>
+					<li class="sub">b6 2sub2</li>
+					</ul>
+				</li>
+				<li class="overflow">b6 3</li>
+				</ul>					<!---- end 2nd main menu overflow  s ---->
+				</li>					<!---- end 2nd main menu all  s ---->
+			</ul>
+			
+
+		</ul> <!-- navbar --->
+
+		</div> <!-- wrapper --->
+	</body>
+</html>
