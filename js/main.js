@@ -1,23 +1,70 @@
 // =====================================
-// ========= GLOBAL VARIBLES ===========
+// ========= GLapp.AL VARIBLES ===========
 // =====================================
 
 // a global object for encapsulation purposes.
-var O = O ? O : {};
+var app = app || {};
 
-// var last_clicked_node;
+app = {
 
-// =====================================
-// ======= Load Content As JSON ========
-// =====================================
+    initialize: function(){
+
+        //default content becomes visible
+        setTimeout(function(){$('#default_content').show(100)},5000);
+
+        //attempt to get a node tree
+        app.get_tree();
+
+        //set left keydown behavior
+        $(document).keydown(function(e){
+            if (e.keyCode == 38) { 
+               app.change_section_up()
+               return false;
+            }
+        });
+
+        //set right keydown behavior
+        $(document).keydown(function(e){
+            if (e.keyCode == 40) { 
+               app.change_section_down()
+               return false;
+            }
+        });
+
+        //set right keydown behavior
+        $(document).keydown(function(e){
+            if (e.keyCode == 39) { 
+               app.change_section_inward()
+               return false;
+            }
+        });
+
+        //set left keydown behavior
+        $(document).keydown(function(e){
+            if (e.keyCode == 37) { 
+               app.change_section_outward()
+               return false;
+            }
+        });
+
+        //if window is resized from a smaller viewport to a large enough viewport, attempt to build a tree
+        $(window).resize(function() {
+            //if window is large enough
+            app.get_tree();
+        });
 
 
-//load the content as JSON
-O.content = {
+    },
+    // =====================================
+    // ======= Load Content as JSON ========
+    // =====================================
+
+    //load the content as JSON
+    content: {
         id: 'title icon-home icon-large',
         label: '',
         amount: 50,
-        callback: O.change_section,
+        callback: app.change_section,
         body_html: "<div id='default_content' style='display:block'><br><br><br><br><br><br><br><br><br><br><br><br><br><br><span class='icon-long-arrow-left icon-large'/><span>  click the bubbles to get started.</div>",
         color: '#AA0000',  // color for root node, will be inherited by children 
         children: [
@@ -27,8 +74,8 @@ O.content = {
                 amount: 20,
                 color: '#FFFFFF',
                 callback: function(node){
-                    O.change_section(node)
-                    O.get_tumblr_page_json("code")
+                    app.change_section(node)
+                    app.get_tumblr_page_json("code")
                 },
                 children: [
                     {
@@ -53,8 +100,8 @@ O.content = {
                 amount: 20,
                 color: '#FFFFFF',
                 callback: function(node){
-                    O.change_section(node)
-                    O.get_tumblr_page_json("about")
+                    app.change_section(node)
+                    app.get_tumblr_page_json("about")
                 },
                 children: [
                     {
@@ -63,7 +110,7 @@ O.content = {
                         id: 'icon-book icon-large link',
                         color: '#AA0000',
                         callback: function(){
-                            O.get_tumblr_page_json('about');
+                            app.get_tumblr_page_json('about');
                         }
                     },
                     {
@@ -72,7 +119,7 @@ O.content = {
                         id: 'icon-bullhorn icon-large link',
                         color: '#AA0000',
                         callback: function(){
-                            O.get_tumblr_page_json('press');
+                            app.get_tumblr_page_json('press');
                         }
                     },
                     {
@@ -81,7 +128,7 @@ O.content = {
                         id: 'icon-file-text icon-large link',
                         color: '#AA0000',
                         callback: function(){
-                            O.get_tumblr_page_json('writing');
+                            app.get_tumblr_page_json('writing');
                         }
                     }
                 ]
@@ -91,7 +138,7 @@ O.content = {
                 id: 'section_title icon-camera icon-large',
                 amount: 20,
                 color: '#FFFFFF',
-                callback: O.change_section,
+                callback: app.change_section,
                 children: [
                     {
                         label: 'instagram', 
@@ -122,8 +169,8 @@ O.content = {
                 amount: 20,
                 color: '#FFFFFF',
                 callback: function(node){
-                    O.change_section(node)
-                    O.get_tumblr_page_json("about","littleinsects.com")
+                    app.change_section(node)
+                    app.get_tumblr_page_json("about","littleinsects.com")
                 },
                 children: [
                     {
@@ -146,7 +193,7 @@ O.content = {
                 label: 'blogs',
                 amount: 20,
                 color: '#FFFFFF',
-                callback: O.change_section, 
+                callback: app.change_section, 
                 id: 'section_title icon-file-text icon-large',
                 children: [
                     { 
@@ -170,7 +217,7 @@ O.content = {
                 label: 'contact', 
                 amount: 20, 
                 color: '#FFFFFF',
-                callback: O.change_section,
+                callback: app.change_section,
                 id: 'section_title icon-envelope icon-large',
                 children: [
                     { 
@@ -204,187 +251,110 @@ O.content = {
                 ]
             }
         ]
-};
+    },
 
+    // =====================================
+    // ===== GLOBAL HELPER FUNCTIONS =======
+    // =====================================
 
-// =====================================
-// ===== GLOBAL HELPER FUNCTIONS =======
-// =====================================
-
-O.get_tree = function(){
-
-    //if screen is large enough and there is no tree
-    if (window.document.width > 960 && window.document.height > 480 && !O.tree) {
-        //make bubble tree
-        O.tree = new BubbleTree({
-            data: O.content,
-            container: '.bubbletree'
-        });
-    }
-
-}
-
-O.change_section = function(node){
-    O.set_content_text(' ')
-    //default title
-    var heading_name = node == "" || node.label == "" ? "developer / musician / etc" : node.label;
-
-    var body = node.body_html || " "
-
-    $('#sub_heading').html(heading_name);
-    $('#content_body').html(body);
-    $('#content_body').css({
-        "overflow":"hidden"
-    })
-
-}
-
-O.get_tumblr_page_json = function(section_name,tumblr_url){
-    var tumblr_url = tumblr_url || "omardelarosa.tumblr.com"
-    var section_name = section_name || 'about';
-    $('body').append('<script src="http://'+tumblr_url+'/'+section_name+'/json"></script>');
-    
-    //this is an approximated network lag time
-    setTimeout(O.set_content_text,500);
-}
-
-O.set_content_text = function(text,attempt_index){
-    var attempt_index = attempt_index || 0;
-    //gets body text either from func argument or tumblr
-    var text = text || function(){
-        if (attempt_index < 15) {
-            try {
-                return tumblr_api_read.posts[0]["regular-body"]
-            } catch(error) {
-                // console.log(error)
-                if (attempt_index < 1) {
-                    console.log("Loading...");
-                }
-                attempt_index += 1;
-                //console.log("Attempt Index: ",attempt_index)
-                setTimeout(function(){
-                    O.set_content_text(text,attempt_index)
-                },500)
+    get_tree: function(){
+        //if screen is large enough and there is no tree
+        if (window.document.width > 960 && window.document.height > 480 && !app.tree) {
+                //make bubble tree
+                app.tree = new BubbleTree({
+                    data: app.content,
+                    container: '.bubbletree'
+                });
             }
-        } else {
-            //replace with alt error message soon
-            return O.tree.error_messages.connection_failure
+    },
+
+    change_section: function(node){
+        $('#content_body').text(' ')
+        //default title
+        var heading_name = node == "" || node.label == "" ? "developer / musician / etc" : node.label;
+
+        var body = node.body_html || " "
+
+        $('#sub_heading').html(heading_name);
+        $('#content_body').html(body);
+        $('#content_body').css({
+            "overflow":"hidden"
+        })
+
+    },
+
+    get_tumblr_page_json: function(section_name,tumblr_url){
+    
+        var tumblr_url = tumblr_url || "http://omardelarosa.tumblr.com",
+            section_name = section_name || 'about',
+            url_concat = tumblr_url+"/"+section_name+"/json";
+
+        $('#content_body').tumblrize(url_concat,function(e,t){
+            t.mCustomScrollbar();
+        });
+
+
+    },
+
+    //experimental stuff
+
+    footerToggle: function(){
+        $('.footer').toggle();
+    },
+
+    change_section_outward: function (){
+        if(app.tree.currentCenter.parent) {
+           app.tree.navigateTo(app.tree.currentCenter.parent) 
         }
+    },
+
+    change_section_inward: function (){
+        if (app.tree.currentCenter.children.length > 0) {
+            app.tree.navigateTo(app.tree.currentCenter.children[0])
+        } else {
+            app.change_section_down();
+        }
+    },
+
+    change_section_up: function(){
+        //moves to the left node
+
+        //checks if current node is not "home"
+        if (app.tree.currentCenter.label !== "") {
+            app.tree.navigateTo(app.tree.currentCenter.right)
+        } else {
+            //or moves to first child of center node.
+            app.tree.navigateTo(app.tree.currentCenter.children[0])
+        }
+        //returns the new center node.
+        return app.tree.currentCenter
+    },
+
+    change_section_down: function(){
+        //moves to right node
+
+        //checks if current node is not "home"
+        if (app.tree.currentCenter.label !== "") {
+            app.tree.navigateTo(app.tree.currentCenter.right)
+        } else {
+            //or moves to first child of center node.
+            app.tree.navigateTo(app.tree.currentCenter.children[0])
+        }
+        //returns the new center node.
+        return app.tree.currentCenter
     }
 
-    $('#content_body').html(text);
-    $('#content_body').mCustomScrollbar();
-    tumblr_api_read = ""
-}
-
-//experimental stuff
-
-O.footerToggle = function(){
-    $('.footer').toggle();
 };
 
-
-O.change_section_outward = function (){
-    
-    if(O.tree.currentCenter.parent) {
-       O.tree.navigateTo(O.tree.currentCenter.parent) 
-    }
-
-}
-
-O.change_section_inward = function (){
-
-    if (O.tree.currentCenter.children.length > 0) {
-        O.tree.navigateTo(O.tree.currentCenter.children[0])
-    } else {
-        O.change_section_down();
-    }
-    
-
-}
-
-O.change_section_up = function(){
-    //moves to the left node
-
-    //checks if current node is not "home"
-    if (O.tree.currentCenter.label !== "") {
-        O.tree.navigateTo(O.tree.currentCenter.right)
-    } else {
-        //or moves to first child of center node.
-        O.tree.navigateTo(O.tree.currentCenter.children[0])
-    }
-    //returns the new center node.
-    return O.tree.currentCenter
-}
-
-O.change_section_down = function(){
-    //moves to right node
-
-    //checks if current node is not "home"
-    if (O.tree.currentCenter.label !== "") {
-        O.tree.navigateTo(O.tree.currentCenter.right)
-    } else {
-        //or moves to first child of center node.
-        O.tree.navigateTo(O.tree.currentCenter.children[0])
-    }
-    //returns the new center node.
-    return O.tree.currentCenter
-}
-
-O.set_initial_event_bindings = function(){
-
-    //set left keydown behavior
-    $(document).keydown(function(e){
-        if (e.keyCode == 38) { 
-           O.change_section_up()
-           return false;
-        }
-    });
-
-    //set right keydown behavior
-    $(document).keydown(function(e){
-        if (e.keyCode == 40) { 
-           O.change_section_down()
-           return false;
-        }
-    });
-
-    //set right keydown behavior
-    $(document).keydown(function(e){
-        if (e.keyCode == 39) { 
-           O.change_section_inward()
-           return false;
-        }
-    });
-
-    //set left keydown behavior
-    $(document).keydown(function(e){
-        if (e.keyCode == 37) { 
-           O.change_section_outward()
-           return false;
-        }
-    });
-
-    //if window is resized from a smaller viewport to a large enough viewport, attempt to build a tree
-    $(window).resize(function() {
-        //if window is large enough
-        O.get_tree();
-    });
-}
-
 // =====================================
-// ====== ONLOAD FUNCTION CALLS ========
+// ====== ON DOCUMENT READY CALLS ======
 // =====================================
 
 $(function() {
 
-    //default content becomes visible
-    setTimeout(function(){$('#default_content').show(100)},5000);
-
-    //attempt to get a node tree
-    O.get_tree();
-
     //set key bindings
-    O.set_initial_event_bindings();
+    app.initialize();
 
+
+    
 });

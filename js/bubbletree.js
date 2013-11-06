@@ -763,7 +763,7 @@ var BubbleTree = function(config, onHover, onUnHover) {
 
 		//if there's a callback function on the node, calls it.  else blanks out content text
 		if (me.currentCenter) {
-			me.currentCenter.callback ? me.currentCenter.callback(me) : O.set_content_text(' ');
+			me.currentCenter.callback ? me.currentCenter.callback(me) : $('#content_body').text(' ');
 		}
 	};
 
