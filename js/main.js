@@ -289,10 +289,9 @@ app = {
             section_name = section_name || 'about',
             url_concat = tumblr_url+"/"+section_name+"/json";
 
-        $('#content_body').tumblrize(url_concat,function(e,t){
-            t.mCustomScrollbar();
+        $('#content_body').tumblrize(url_concat,function(e,target){
+            target.mCustomScrollbar();
         });
-
 
     },
 
