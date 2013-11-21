@@ -259,7 +259,7 @@ app = {
 
     get_tree: function(){
         //if screen is large enough and there is no tree
-        if (window.document.width > 960 && window.document.height > 480 && !app.tree) {
+        if ($(document).width() > 960 && $(document).height() > 480 && !app.tree) {
                 //make bubble tree
                 app.tree = new BubbleTree({
                     data: app.content,
