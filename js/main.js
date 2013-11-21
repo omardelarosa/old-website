@@ -353,7 +353,5 @@ $(function() {
 
     //set key bindings
     app.initialize();
-
-
     
 });
