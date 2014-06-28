@@ -9,6 +9,9 @@ app = {
 
     initialize: function(){
 
+        // get github repos, etc.
+        app.get_github_repos();
+
         //default content becomes visible
         setTimeout(function(){$('#default_content').show(100)},5000);
 
@@ -74,25 +77,10 @@ app = {
                 amount: 20,
                 color: '#FFFFFF',
                 callback: function(node){
-                    app.change_section(node)
-                    app.get_tumblr_page_json("code")
+                    app.render_code_stats()
                 },
-                children: [
-                    {
-                        label: 'github', 
-                        amount: 15,
-                        id: 'icon-github icon-large link',
-                        color: '#AA0000',
-                        url: 'http://github.com/omardelarosa',
-                    },
-                    {
-                        label: 'bitbucket', 
-                        amount: 15,
-                        id: 'icon-bitbucket icon-large link',
-                        color: '#AA0000',
-                        url: "https://bitbucket.org/omdel"
-                    }
-                ]
+                // set using app.get_github_repos
+                children: []
             },
             { 
                 label: 'info', 
@@ -258,9 +246,156 @@ app = {
     // =====================================
 
     get_github_repos: function(){
-        $.getJSON("https://api.github.com/users/omardelarosa/repos", function(xhr, res, req){
-            
+        $.getJSON("https://api.github.com/users/omardelarosa/repos", function(res, status, req){
+            var repos = res;
+            var sortedRepos = {};
+            var codeNode = _.where(app.content.children, {"label": "code"})[0];
+            _.each(repos, function(repo){
+                if (!repo.private) {
+                    var language = repo.language || "Other";
+                    // create a language section if there isn't one
+                    if (!sortedRepos.hasOwnProperty(language)) {
+                        sortedRepos[language] = [];
+                    }
+                    sortedRepos[language].push(repo);
+                }
+            })
+            app.repos = sortedRepos;
+
+            _.each(sortedRepos, function(value, key){
+                var repos = value;
+                var language = key;
+
+                var languageChild = {
+                    label: key,
+                    amount: 8,
+                    id: 'icon-github icon-large link',
+                    color: '#AA0000',
+                    callback: function (tree) {
+                        var htmlArr = ["<div class='repos'>"]
+                        var currentNode = tree.currentCenter
+                        htmlArr.push("<h4>"+language+" Repos</h4>")
+                        repos.forEach(function(repo){
+                            htmlArr.push("<p class='repo_meta'><a href='#"+repo.name+"'>"+repo.name+"</a></p>");
+                        })
+                        htmlArr.push("</div>")
+                        html = htmlArr.join("");
+                        app.set_content_html(html);
+                    },
+                    children: []
+                }
+
+                repos.forEach(function(repo, idx){
+                    var repo = repo;
+
+                    var iconClass = repo.fork ? 'octicon octicon-repo-forked' : 'octicon octicon-repo link';
+
+                    var repoChild = {
+                        label: repo.name,
+                        amount: app.bubble_size_adjust(repo.name),
+                        id: iconClass,
+                        color: '#FFFFFF',
+                        callback: function(){
+                            $.getJSON(repo.url+"/collaborators", function(res, status, req){
+                                var collaboratorsList = ["<ul class='collaborators'>"];
+
+                                res.forEach(function(user){
+                                    var collabHtml = [
+                                        "<li>",
+                                            "<a href='",user.html_url,"'",
+                                                "<img class='collaborator_image' src='", user.avatar_url, "'/>",
+                                            "</a>",
+                                        "</li>" 
+                                        ].join("")
+                                    collaboratorsList.push(collabHtml);
+                                })
+
+                                // close element
+                                collaboratorsList.push("</ul>")
+
+                                var html = [
+                                    "<h3 class='repo_heading'>",
+                                        "<a href='",repo.html_url,"'>",repo.name,"</a>",
+                                    "</h3>",
+                                    "<div>",
+                                        "<p class='repo_meta'>",
+                                            "<h4>Homepage</h4>", 
+                                            "<p>",repo.homepage || "","</p>",
+                                        "</p>",
+                                        "<p class='repo_meta'>",
+                                            "<h4>Description:</h4>", 
+                                            "<p>", repo.description,"</p>", 
+                                        "</p>",
+                                        "<p class='repo_meta'>",
+                                            "<h4>Collaborators:</h4>",
+                                            "<p>", collaboratorsList.join(""), "</p>", 
+                                        "</p>",
+                                    "</div>"
+                                ].join("")
+                                app.set_content_html(html)
+                            })
+                        }
+                    }
+                    languageChild.children.push(repoChild)
+                })
+                if (languageChild.children.length < 2) {
+                    // prevents issue with one-children nodes not rendering correctly
+                    var extraChild = {
+                        label: '', 
+                        amount: 3,
+                        id: 'icon-home icon-large link',
+                        color: '#FFFFFF',
+                        children: [],
+                        callback: function(){
+                            app.tree.navigateTo(app.tree.nodesByUrlToken["0"])
+                        }
+                    }
+                    languageChild.children.push(extraChild);
+                }
+                codeNode.children.push(languageChild);
+            })
+
         })
+    },
+
+    render_code_stats: function() {
+        var html = [ "<div>" ];
+        var lengthOrMax = function(list, max, scale, shift){
+            var scale = scale || 1;
+            var shift = shift || 0;
+            return (list.length*scale)+shift <= max ? (list.length*scale)+shift : max;
+        }
+        // TODO: toggle sorts
+        var langs = []
+        _.each(app.repos, function (repoList, langName) {
+            var lang = {
+                name: langName,
+                repoCount: repoList.length
+            }
+            var langHtml = [
+                "<span style=''>", 
+                    "<strong>",langName, "</strong>: ", repoList.length, " repos</span>",
+                "<p style='background-color: rgb(",
+                        lengthOrMax(repoList, 255, 3, 5),"5,",
+                        lengthOrMax(repoList, 255, 1),"0,0); width: ", 
+                    // set the width of bar
+                    lengthOrMax(repoList, 10), "0%;' >", 
+                    "&nbsp;", 
+                "</p>",
+
+            ].join("")
+            lang.html = langHtml
+            langs.push(lang)
+        })
+        var sortedLangs = _.sortBy(langs, function(lang){
+            return lang.repoCount*-1
+        });
+        sortedLangs.forEach(function(lang){
+            html.push(lang.html);
+        })
+        html.push("</div>")
+        html = html.join("");
+        app.set_content_html(html);
     },
 
     reset_tree: function() {
@@ -270,6 +405,8 @@ app = {
             data: app.content,
             container: '.bubbletree'
         });
+
+        app.rootNode = app.tree.currentCenter;
     },
 
     get_tree: function(){
@@ -280,6 +417,8 @@ app = {
                     data: app.content,
                     container: '.bubbletree'
                 });
+
+                app.rootNode = app.tree.currentCenter;
             }
     },
 
@@ -296,6 +435,10 @@ app = {
             "overflow":"hidden"
         })
 
+    },
+
+    set_content_html: function(html){
+        $('#content_body').html(html)
     },
 
     get_tumblr_page_json: function(section_name,tumblr_url){
@@ -356,6 +499,11 @@ app = {
         }
         //returns the new center node.
         return app.tree.currentCenter
+    },
+
+    bubble_size_adjust: function(text){
+        var adjustedLength = Math.floor(text.length/0.90);
+        return adjustedLength < 6 ? 6 : adjustedLength;
     }
 
 };
