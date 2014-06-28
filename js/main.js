@@ -274,9 +274,9 @@ app = {
                     callback: function (tree) {
                         var htmlArr = ["<div class='repos'>"]
                         var currentNode = tree.currentCenter
-                        htmlArr.push("<h4>"+language+" Repos</h4>")
+                        htmlArr.push("<h2>"+language+" Repos</h2>")
                         repos.forEach(function(repo){
-                            htmlArr.push("<p class='repo_meta'><a href='#"+repo.name+"'>"+repo.name+"</a></p>");
+                            htmlArr.push("<h3 class='repo_meta'><a href='#"+repo.name+"'>"+repo.name+"</a></h3>");
                         })
                         htmlArr.push("</div>")
                         html = htmlArr.join("");
@@ -313,14 +313,19 @@ app = {
                                 // close element
                                 collaboratorsList.push("</ul>")
 
+                                var homePageTag = function(repo) {
+                                    if (!repo.homepage) return "";
+                                    return "<a href='"+repo.homepage+"'>"+repo.homepage+"</a>"
+                                }
+
                                 var html = [
-                                    "<h3 class='repo_heading'>",
+                                    "<h2 class='repo_heading'>",
                                         "<a href='",repo.html_url,"'>",repo.name,"</a>",
-                                    "</h3>",
+                                    "</h2>",
                                     "<div>",
                                         "<p class='repo_meta'>",
                                             "<h4>Homepage</h4>", 
-                                            "<p>",repo.homepage || "","</p>",
+                                            "<p>",homePageTag(repo),"</p>",
                                         "</p>",
                                         "<p class='repo_meta'>",
                                             "<h4>Description:</h4>", 
@@ -438,7 +443,10 @@ app = {
     },
 
     set_content_html: function(html){
-        $('#content_body').html(html)
+        var $contentBody = $('#content_body')
+            $contentBody
+                .html(html)
+                .mCustomScrollbar();
     },
 
     get_tumblr_page_json: function(section_name,tumblr_url){

@@ -478,3 +478,21 @@ a {
         text-align: center;
     }
 }
+
+/* GITHUB REPOS */
+
+.repo_meta {
+    margin: 0px 0px 40px 0px;
+}
+
+.collaborators {
+    list-style-type: none;
+}
+
+.collaborator {
+    display: inline-block;
+}
+
+.collaborator_image {
+    width: 50px;
+}
