@@ -16,7 +16,7 @@ app = {
         setTimeout(function(){$('#default_content').show(100)},5000);
 
         //attempt to get a node tree
-        app.get_tree();
+        // app.get_tree();
 
         //set left keydown behavior
         $(document).keydown(function(e){
@@ -73,7 +73,7 @@ app = {
         children: [
             { 
                 label: 'code', 
-                id: 'section_title icon-code icon-large',
+                id: 'section_title icon-code icon-large link',
                 amount: 20,
                 color: '#FFFFFF',
                 callback: function(node){
@@ -246,8 +246,20 @@ app = {
     // =====================================
 
     get_github_repos: function(){
-        $.getJSON("https://api.github.com/users/omardelarosa/repos", function(res, status, req){
-            var repos = res;
+
+        var reposRaw = [];
+        var pageNum = 1;
+
+        function handleAjax(res, status, req){
+            
+            if (res.length == 0) return buildRepoNodes(reposRaw);
+            reposRaw.push(res);
+            pageNum+=1;
+            $.getJSON("https://api.github.com/users/omardelarosa/repos?page="+pageNum, handleAjax)
+        }
+
+        function buildRepoNodes() {
+            var repos = _.flatten(reposRaw);
             var sortedRepos = {};
             var codeNode = _.where(app.content.children, {"label": "code"})[0];
             _.each(repos, function(repo){
@@ -268,11 +280,11 @@ app = {
 
                 var languageChild = {
                     label: key,
-                    amount: 8,
+                    amount: repos.length > 8 ? repos.length : 8,
                     id: 'icon-github icon-large link',
                     color: '#AA0000',
                     callback: function (tree) {
-                        var htmlArr = ["<div class='repos'>"]
+                        var htmlArr = ["<div class='repos'>"];
                         var currentNode = tree.currentCenter
                         htmlArr.push("<h2>"+language+" Repos</h2>")
                         repos.forEach(function(repo){
@@ -286,13 +298,14 @@ app = {
                 }
 
                 repos.forEach(function(repo, idx){
+                    if (repo.fork) return;
                     var repo = repo;
 
                     var iconClass = repo.fork ? 'octicon octicon-repo-forked' : 'octicon octicon-repo link';
 
                     var repoChild = {
-                        label: repo.name,
-                        amount: app.bubble_size_adjust(repo.name),
+                        label: app.bubble_name_truncate(repo.name),
+                        amount: app.bubble_size_adjust(repo.name, repos.length),
                         id: iconClass,
                         color: '#FFFFFF',
                         callback: function(){
@@ -360,7 +373,10 @@ app = {
                 codeNode.children.push(languageChild);
             })
 
-        })
+            app.get_tree();
+        }
+
+        $.getJSON("https://api.github.com/users/omardelarosa/repos?page="+pageNum, handleAjax)
     },
 
     render_code_stats: function() {
@@ -372,11 +388,14 @@ app = {
         }
         // TODO: toggle sorts
         var langs = []
+        var total = 0;
         _.each(app.repos, function (repoList, langName) {
             var lang = {
                 name: langName,
                 repoCount: repoList.length
             }
+            // add to total
+            total += lang.repoCount;
             var langHtml = [
                 "<span style=''>", 
                     "<strong>",langName, "</strong>: ", repoList.length, " repos</span>",
@@ -398,7 +417,7 @@ app = {
         sortedLangs.forEach(function(lang){
             html.push(lang.html);
         })
-        html.push("</div>")
+        html.push("<p><strong>Total:</strong> "+total+" repos</p></div>");
         html = html.join("");
         app.set_content_html(html);
     },
@@ -509,9 +528,16 @@ app = {
         return app.tree.currentCenter
     },
 
-    bubble_size_adjust: function(text){
+    bubble_size_adjust: function(text, siblingNum){
+        if (siblingNum && siblingNum > 10) return 2;
         var adjustedLength = Math.floor(text.length/0.90);
         return adjustedLength < 6 ? 6 : adjustedLength;
+    },
+
+    bubble_name_truncate: function(fullName, max) {
+        var max = max || 8;
+        if (fullName.length < max) return fullName 
+        return fullName.slice(0,8)+"...";
     }
 
 };
