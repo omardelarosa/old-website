@@ -257,6 +257,21 @@ app = {
     // ===== GLOBAL HELPER FUNCTIONS =======
     // =====================================
 
+    get_github_repos: function(){
+        $.getJSON("https://api.github.com/users/omardelarosa/repos", function(xhr, res, req){
+            
+        })
+    },
+
+    reset_tree: function() {
+        app.tree.clean();
+        //make bubble tree
+        app.tree = new BubbleTree({
+            data: app.content,
+            container: '.bubbletree'
+        });
+    },
+
     get_tree: function(){
         //if screen is large enough and there is no tree
         if ($(document).width() > 960 && $(document).height() > 480 && !app.tree) {
