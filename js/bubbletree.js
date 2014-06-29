@@ -530,6 +530,9 @@ var BubbleTree = function(config, onHover, onUnHover) {
 				t.$(grandpa).rad = 0;
 				//
 				var hw = me.width * 0.5;
+				
+				// fix for a bug rendering nodes without a node.right
+				if (!node.right) node.right = node.left;
 
 				rad2 = 0 - Math.max(
 					//hw *0.8 - tgtScale * (a2rad(node.parent.amount)+a2rad(node.amount)), // maximum visible part
