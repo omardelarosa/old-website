@@ -10,7 +10,7 @@ app = {
     initialize: function(){
 
         // get github repos, etc.
-        app.get_github_repos();
+        app.get_github_repos(app.get_tree);
 
         //default content becomes visible
         setTimeout(function(){$('#default_content').show(100)},5000);
@@ -194,9 +194,8 @@ app = {
                     { 
                         label: 'blogger',
                         amount: 15, 
-                        id: 'blogger icon-archive icon-large link',
-                        color: '#AA0000',
-                        url: "http://blog.omardelarosa.com"
+                        id: 'blogger icon-archive icon-large',
+                        color: '#AA0000'
                     }
 
                 ]
@@ -245,7 +244,7 @@ app = {
     // ===== GLOBAL HELPER FUNCTIONS =======
     // =====================================
 
-    get_github_repos: function(){
+    get_github_repos: function(cb){
 
         var reposRaw = [];
         var pageNum = 1;
@@ -308,6 +307,7 @@ app = {
                         amount: app.bubble_size_adjust(repo.name, repos.length),
                         id: iconClass,
                         color: '#FFFFFF',
+                        repo: repo,
                         callback: function(){
                             $.getJSON(repo.url+"/collaborators", function(res, status, req){
                                 var collaboratorsList = ["<ul class='collaborators'>"];
@@ -333,7 +333,7 @@ app = {
 
                                 var html = [
                                     "<h2 class='repo_heading'>",
-                                        "<a href='",repo.html_url,"'>",repo.name,"</a>",
+                                        "<a href='",repo.html_url,"' target='_blank'>",repo.name,"</a>",
                                     "</h2>",
                                     "<div>",
                                         "<p class='repo_meta'>",
@@ -372,8 +372,7 @@ app = {
                 }
                 codeNode.children.push(languageChild);
             })
-
-            app.get_tree();
+            app.get_blogger_data(cb)
         }
 
         $.getJSON("https://api.github.com/users/omardelarosa/repos?page="+pageNum, handleAjax)
@@ -420,6 +419,81 @@ app = {
         html.push("<p><strong>Total:</strong> "+total+" repos</p></div>");
         html = html.join("");
         app.set_content_html(html);
+    },
+
+    get_blogger_data: function(cb){
+        $.getJSON("https://www.googleapis.com/blogger/v3/blogs/3160138467753157166/posts?key=AIzaSyCcC2Lqz8WTFad5T3V5G-Yl-e_sRfopr8k")
+            .then(function(data){
+                // console.log(data);
+                var posts = data.items;
+                app.build_blogger_nodes(posts, cb)
+                // app.set_content_html(data.items[0].content);
+            })
+    },
+
+    build_blogger_nodes: function(posts, cb){
+        var bloggerNode = _.where(_.where(app.content.children, {"label": "blogs"})[0].children, {"label": "blogger"})[0]
+        var children = [];
+        posts.forEach(function(post, idx){
+            var postNode = {
+                label: "Blog Post "+(idx+1),
+                amount: 5,
+                content: post.content,
+                post: post,
+                id: "icon-github icon-large link",
+                color: "#FFFFFF",
+                callback: function(tree) {
+                    var thisNode = tree.currentCenter
+                    var htmlArr = [
+                        "<h2 class='blog_post_heading'>", 
+                            "<a href='", thisNode.post.url ,"' target='_blank'>",
+                            thisNode.post.title,
+                            "</a>",
+                        "</h2>",
+                        "<div class='blog_post_content'>", thisNode.content, "</div>"
+                    ]
+                    app.set_content_html(htmlArr.join(""));
+                }
+            }
+            children.push(postNode);
+        })
+
+
+        // TODO: implement a smarter sort system
+        bloggerNode.children = _.sortBy(children, function(post){
+            return moment(post.published).unix(Number)
+        });
+        
+        // set Blogger Node Callback
+        function renderBlogIndex (node) {
+            var htmlArr = [
+                "<h2>Last 10 Posts:</h2>",
+                "<ul class='blog_post_list'>"
+            ]
+
+            posts.forEach(function(post, idx){
+                var postHtmlArr = [
+                    "<li class='blog_post_listing'>",
+                        "<h5>",
+                        (idx+1), ": ","<a href='#blog-post-",(idx+1),"'>",  post.title ,"</a>",
+                        " (", moment(post.published,"YYYYMMDD").fromNow(), ")",
+                        "</h5>",
+                    "</li>"
+                ];
+                htmlArr.push(postHtmlArr.join(""))
+            })
+
+            // close list
+            htmlArr.push("<li>&nbsp;</li><li><a href='http://blog.omardelarosa.com' target='_blank'>More Posts</a></li>")
+            htmlArr.push("</ul>")
+
+            app.set_content_html(htmlArr.join(""))
+        }
+
+        bloggerNode.callback = renderBlogIndex
+
+
+        cb();
     },
 
     reset_tree: function() {
@@ -528,9 +602,10 @@ app = {
         return app.tree.currentCenter
     },
 
-    bubble_size_adjust: function(text, siblingNum){
+    bubble_size_adjust: function(text, siblingNum, scale){
+        var scale = scale || 0.90;
         if (siblingNum && siblingNum > 10) return 2;
-        var adjustedLength = Math.floor(text.length/0.90);
+        var adjustedLength = Math.floor(text.length/scale);
         return adjustedLength < 6 ? 6 : adjustedLength;
     },
 
