@@ -187,9 +187,8 @@ app = {
                     { 
                         label: 'tumblr',
                         amount: 15, 
-                        id: 'tumblr icon-tumblr icon-large link',
+                        id: 'tumblr icon-tumblr icon-large',
                         color: '#AA0000',
-                        url: "http://omardelarosa.tumblr.com"
                     },
                     { 
                         label: 'blogger',
@@ -436,17 +435,17 @@ app = {
         var children = [];
         posts.forEach(function(post, idx){
             var postNode = {
-                label: "Blog Post "+(idx+1),
+                label: (idx+1).toString(),
                 amount: 5,
                 content: post.content,
                 post: post,
-                id: "icon-github icon-large link",
+                id: "icon-pencil icon-large link",
                 color: "#FFFFFF",
                 callback: function(tree) {
                     var thisNode = tree.currentCenter
                     var htmlArr = [
                         "<h2 class='blog_post_heading'>", 
-                            "<a href='", thisNode.post.url ,"' target='_blank'>",
+                            "<a href='#", (idx+1),"' target='_blank'>",
                             thisNode.post.title,
                             "</a>",
                         "</h2>",
@@ -465,18 +464,20 @@ app = {
         });
         
         // set Blogger Node Callback
-        function renderBlogIndex (node) {
+        function renderBlogIndex (tree) {
+            var currentNode = tree.currentCenter;
             var htmlArr = [
                 "<h2>Last 10 Posts:</h2>",
                 "<ul class='blog_post_list'>"
             ]
 
-            posts.forEach(function(post, idx){
+            currentNode.children.forEach(function(postNode, idx){
+                var post = postNode;
                 var postHtmlArr = [
                     "<li class='blog_post_listing'>",
                         "<h5>",
-                        (idx+1), ": ","<a href='#blog-post-",(idx+1),"'>",  post.title ,"</a>",
-                        " (", moment(post.published,"YYYYMMDD").fromNow(), ")",
+                        (idx+1), ": ","<a href='#",postNode.urlToken,"'>",  postNode.post.title ,"</a>",
+                        "<span class='blog_listing_timestamp'> (", moment(post.published,"YYYYMMDD").fromNow(), ") </span>",
                         "</h5>",
                     "</li>"
                 ];
@@ -493,7 +494,130 @@ app = {
         bloggerNode.callback = renderBlogIndex
 
 
+        app.get_tumblr_posts(cb);
+    },
+
+    get_tumblr_posts: function (cb) {
+        var tumblrDataUrl = "http://api.tumblr.com/v2/blog/omardelarosa.tumblr.com/posts?api_key=Ijw3Ewm7iwga9WL1Pjo3hCwS7o388iYel1nuEMPdmGYA8P51CP"
+        $.ajax({
+            url: tumblrDataUrl,
+            dataType: "jsonp"
+        })
+        .then(function(res, status, req){
+            var posts = res.response.posts;
+            app.render_tumblr_post_nodes(posts, cb)
+        })
+    },
+
+    render_tumblr_post_nodes: function (posts, cb) {
+        var tumblrNode = _.where(_.where(app.content.children, {"label": "blogs"})[0].children, {"label": "tumblr"})[0]
+        var children = [];
+
+        function normalize_tumblr_content (post) {
+            // parse tumblr content
+
+            var type = post.type;
+
+            var content = [ "<div class='tumblr_post'>" ];
+
+
+            switch (type) {
+                case "text":
+                    content.push(post.body)
+                    break;
+                // case "quote":
+                //     content.push(
+                //         [ "<h6 class='quote_text'>",
+                //                 post.text,
+                //             "</h6>",
+                //             "<p>",post.source, "</p>"
+                //         ].join("")
+                //     )
+                //     break;
+                // case "link":
+                //     break;
+                // case "answer":
+                //     break;
+                // case "video":
+                //     break;
+                // case "audio":
+                //     break;
+                // case "photo":
+                //     break;
+                // case "chat":
+                //     break;
+                default:
+                    content.push(post.caption);
+                    break;
+            }
+
+            content.push("</div>")
+
+            return content.join("")
+        }
+
+        posts.forEach(function(post, idx){
+            console.log(post)
+            var postNode = {
+                label: (idx+1).toString(),
+                amount: 2,
+                content: normalize_tumblr_content(post),
+                post: post,
+                id: "icon-tumblr icon-large link",
+                color: "#FFFFFF",
+                callback: function(tree) {
+                    var thisNode = tree.currentCenter
+                    var htmlArr = [
+                        "<h2 class='blog_post_heading'>", 
+                            "<a href='", thisNode.post.url ,"' target='_blank'>",
+                            app.html_to_text(thisNode.post.caption),
+                            "</a>",
+                        "</h2>",
+                        "<div class='blog_post_content'>", thisNode.content, "</div>"
+                    ]
+                    app.set_content_html(htmlArr.join(""));
+                }
+            }
+            children.push(postNode);
+        })
+
+        tumblrNode.children = children;
+
+        // set Blogger Node Callback
+        function renderBlogIndex (tree) {
+            var currentNode = tree.currentCenter
+            var htmlArr = [
+                "<h2>Last 20 Posts:</h2>",
+                "<ul class='blog_post_list'>"
+            ]
+
+            currentNode.children.forEach(function(postNode, idx){
+                var post = postNode.post;
+                var postHtmlArr = [
+                    "<li class='blog_post_listing'>",
+                        "<h5>",
+                        (idx+1), ": " , "<a href='#",postNode.urlToken,"'>",  app.html_to_text(post.caption) ,"</a>",
+                        "<span class='blog_listing_timestamp'> (", moment(post.timestamp,"X").fromNow(), ") </span>",
+                        "</h5>",
+                    "</li>"
+                ];
+                htmlArr.push(postHtmlArr.join(""))
+            })
+
+            // close list
+            htmlArr.push("<li>&nbsp;</li><li><a href='http://omardelarosa.tumblr.com' target='_blank'>More Posts</a></li>")
+            htmlArr.push("</ul>")
+
+            app.set_content_html(htmlArr.join(""))
+        }
+
+
+        // console.log(children)
+        tumblrNode.callback = renderBlogIndex
+
+        // load initial callback
         cb();
+
     },
 
     reset_tree: function() {
@@ -618,6 +742,10 @@ app = {
         var max = max || 8;
         if (fullName.length < max) return fullName 
         return fullName.slice(0,8)+trailChars;
+    },
+
+    html_to_text: function(htmlString) {
+        return $(htmlString).text();
     },
 
     url_normalize: function(url) {

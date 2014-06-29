@@ -499,9 +499,17 @@ a {
 
 /* BLOGGER CONTENT */
 
+.blog_listing_timestamp {
+    font-size: 0.75em;
+}
+
 .blog_post_list {
     list-style-type: none;
     padding: 0;
+}
+
+.blog_post_listing {
+    margin-bottom: 20px;
 }
 
 .blog_post_content img {
