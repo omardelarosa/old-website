@@ -288,7 +288,7 @@ app = {
                         var currentNode = tree.currentCenter
                         htmlArr.push("<h2>"+language+" Repos</h2>")
                         repos.forEach(function(repo){
-                            htmlArr.push("<h3 class='repo_meta'><a href='#"+repo.name+"'>"+repo.name+"</a></h3>");
+                            htmlArr.push("<h3 class='repo_meta'><a href='#"+app.bubble_name_truncate(repo.name,8,true)+"'>"+repo.name+"</a></h3>");
                         })
                         htmlArr.push("</div>")
                         html = htmlArr.join("");
@@ -328,7 +328,7 @@ app = {
 
                                 var homePageTag = function(repo) {
                                     if (!repo.homepage) return "";
-                                    return "<a href='"+repo.homepage+"'>"+repo.homepage+"</a>"
+                                    return "<a href='"+app.url_normalize(repo.homepage)+"'>"+repo.homepage+"</a>"
                                 }
 
                                 var html = [
@@ -534,10 +534,24 @@ app = {
         return adjustedLength < 6 ? 6 : adjustedLength;
     },
 
-    bubble_name_truncate: function(fullName, max) {
+    bubble_name_truncate: function(fullName, max, dashBool) {
+        if (dashBool) {
+            var trailChars = "---";
+        } else {
+            var trailChars = "...";
+        }
         var max = max || 8;
         if (fullName.length < max) return fullName 
-        return fullName.slice(0,8)+"...";
+        return fullName.slice(0,8)+trailChars;
+    },
+
+    url_normalize: function(url) {
+        var prefix = "http://"
+        if (url.indexOf(prefix) === -1) {
+            return prefix+url
+        } else {
+            return url;
+        }
     }
 
 };
