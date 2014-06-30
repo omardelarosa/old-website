@@ -459,8 +459,8 @@ app = {
 
 
         // TODO: implement a smarter sort system
-        bloggerNode.children = _.sortBy(children, function(post){
-            return moment(post.published).unix(Number)
+        bloggerNode.children = _.sortBy(children, function(postNode){
+            return moment(postNode.post.published).unix(Number)
         });
         
         // set Blogger Node Callback
@@ -477,7 +477,7 @@ app = {
                     "<li class='blog_post_listing'>",
                         "<h5>",
                         (idx+1), ": ","<a href='#",postNode.urlToken,"'>",  postNode.post.title ,"</a>",
-                        "<span class='blog_listing_timestamp'> (", moment(post.published,"YYYYMMDD").fromNow(), ") </span>",
+                        "<span class='blog_listing_timestamp'> (", moment(postNode.post.published,"YYYYMMDD").fromNow(), ") </span>",
                         "</h5>",
                     "</li>"
                 ];
@@ -557,7 +557,6 @@ app = {
         }
 
         posts.forEach(function(post, idx){
-            console.log(post)
             var postNode = {
                 label: (idx+1).toString(),
                 amount: 2,
@@ -581,7 +580,9 @@ app = {
             children.push(postNode);
         })
 
-        tumblrNode.children = children;
+        tumblrNode.children = tumblrNode.children = _.sortBy(children, function(postNode){
+            return moment(postNode.post.timestamp).unix(Number)
+        });
 
         // set Blogger Node Callback
         function renderBlogIndex (tree) {
