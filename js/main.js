@@ -518,41 +518,82 @@ app = {
 
             var type = post.type;
 
-            var content = [ "<div class='tumblr_post'>" ];
+            var timeStamp = [
+                "<p class='tumblr_timestamp'>(",
+                    moment(post.timestamp,"X").fromNow(),
+                ")</p>"
+            ].join("")
+
+            var content = [ timeStamp, "<div class='tumblr_post'>" ];
 
 
             switch (type) {
                 case "text":
                     content.push(post.body)
                     break;
-                // case "quote":
-                //     content.push(
-                //         [ "<h6 class='quote_text'>",
-                //                 post.text,
-                //             "</h6>",
-                //             "<p>",post.source, "</p>"
-                //         ].join("")
-                //     )
-                //     break;
-                // case "link":
-                //     break;
-                // case "answer":
-                //     break;
-                // case "video":
-                //     break;
-                // case "audio":
-                //     break;
-                // case "photo":
-                //     break;
+                case "quote":
+                    content.push(
+                        [ "<h5 class='quote_text'>",
+                                post.text,
+                            "</h5>",
+                            "<p>",post.source, "</p>"
+                        ].join("")
+                    )
+                    break;
+                case "link":
+                    content.push(
+                        [ "<h5 class='link_url'>",
+                                "<a href='",post.url,"'>", post.title,"</a>",
+                            "</h5>",
+                            "<p>",post.description, "</p>"
+                        ].join("")
+                    )
+                    break;
+                case "answer":
+                    content.push(
+                        [ "<h5 class='question_text'>",
+                                post.question,
+                            "</h5>",
+                            "<p class='question_answer'>",post.answer, "</p>"
+                        ].join("")
+                    )
+                    break;
+                case "video":
+                    var playerTag = [
+                        "<div class='tumblr_video_player'>",
+                            post.player,
+                        "</div>"
+                    ].join("")
+                    content.push(playerTag)
+                    break;
+                case "audio":
+                    var playerTag = [
+                        "<div class='tumblr_audio_player'>",
+                            post.player,
+                        "</div>"
+                    ].join("")
+                    content.push(playerTag)
+                    break;
+                case "photo":
+                    var photoTags = ["<ul class='tumblr_photo_list'>"];
+                    post.photos.forEach(function(photo){
+                        var photoTag = [
+                            "<li class='tumblr_photo_listing'>",
+                                "<img class='tumblr_photo' src='",photo.alt_sizes[2].url,"'/>",
+                            "</li>"
+                        ].join("")
+                        photoTags.push(photoTag)
+                    })
+                    photoTags.push("</ul>")
+                    content.push(photoTags.join(""));
+                    break;
                 // case "chat":
                 //     break;
                 default:
                     content.push(post.caption);
                     break;
             }
-
             content.push("</div>")
-
             return content.join("")
         }
 
@@ -562,16 +603,17 @@ app = {
                 amount: 2,
                 content: normalize_tumblr_content(post),
                 post: post,
+                timestamp: post.timestamp,
                 id: "icon-tumblr icon-large link",
                 color: "#FFFFFF",
                 callback: function(tree) {
                     var thisNode = tree.currentCenter
                     var htmlArr = [
-                        "<h2 class='blog_post_heading'>", 
-                            "<a href='", thisNode.post.url ,"' target='_blank'>",
+                        "<h4 class='blog_post_heading'>", 
+                            "<a href='", thisNode.post.post_url ,"' target='_blank'>",
                             app.html_to_text(thisNode.post.caption),
                             "</a>",
-                        "</h2>",
+                        "</h4>",
                         "<div class='blog_post_content'>", thisNode.content, "</div>"
                     ]
                     app.set_content_html(htmlArr.join(""));
@@ -580,9 +622,8 @@ app = {
             children.push(postNode);
         })
 
-        tumblrNode.children = tumblrNode.children = _.sortBy(children, function(postNode){
-            return moment(postNode.post.timestamp).unix(Number)
-        });
+        // TODO: fix this
+        tumblrNode.children = _.sortBy(children, "timestamp");
 
         // set Blogger Node Callback
         function renderBlogIndex (tree) {
@@ -592,6 +633,36 @@ app = {
                 "<ul class='blog_post_list'>"
             ]
 
+            function renderStats (post) {
+
+                function freshness(post, percentBool) {
+                    var secondsInDay = 86400;
+                    var fresh = Math.floor(255-(moment().unix("X")-post.timestamp)/secondsInDay);
+                    if (percentBool) return (fresh/2.5);
+                    return fresh;
+                }
+
+                function limit_0_to_255(num) {
+                    if (num > 255) return 255;
+                    if (num < 0) return 0;
+                    return num;
+                }
+
+                var statsHtmlArr = [
+                    "<div class='tumblr_stats'>",
+                        "<h5 style='background-color: rgb(0,",
+                                limit_0_to_255(
+                                    freshness(post)
+                                ),",60); width: ",freshness(post,true),"%''><span style='width: 200px; postion: absolute; top: 0; left: 0'>Freshness: ",freshness(post,true),"%</span></h5>",
+                        "<h5 style='background-color: rgb(",
+                                limit_0_to_255(
+                                    post.tags.length*85
+                                ),",0,60); width: ",post.tags.length,"0%''><span style='width: 200px; postion: absolute; top: 0; left: 0'>Tags: ",post.tags.length,"</span></h5>",
+                    "</div>"
+                ];
+                return statsHtmlArr.join("")
+            }
+
             currentNode.children.forEach(function(postNode, idx){
                 var post = postNode.post;
                 var postHtmlArr = [
@@ -599,6 +670,7 @@ app = {
                         "<h5>",
                         (idx+1), ": " , "<a href='#",postNode.urlToken,"'>",  app.html_to_text(post.caption) ,"</a>",
                         "<span class='blog_listing_timestamp'> (", moment(post.timestamp,"X").fromNow(), ") </span>",
+                            renderStats(post),
                         "</h5>",
                     "</li>"
                 ];

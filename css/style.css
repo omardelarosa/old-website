@@ -497,7 +497,7 @@ a {
     width: 50px;
 }
 
-/* BLOGGER CONTENT */
+/* BLOG CONTENT */
 
 .blog_listing_timestamp {
     font-size: 0.75em;
@@ -515,4 +515,22 @@ a {
 .blog_post_content img {
     width: 80%;
     height: 80%;
+}
+
+/* TUMBLR STYLING */
+
+.tumblr_photo_list {
+    list-style-type: none;
+}
+
+.tumblr_audio_player {
+    width: 80%;
+}
+
+.tumblr_video_player {
+    width: 80%;
+}
+
+.spotify_audio_player {
+    width: 100%;
 }
