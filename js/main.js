@@ -83,6 +83,71 @@ app = {
                 children: []
             },
             { 
+                label: 'projects', 
+                id: 'section_title icon-gear icon-large link',
+                amount: 20,
+                color: '#FFFFFF',
+                children: [
+                    {
+                        label: 'pitchfork metrics',
+                        id: 'section_title icon-file icon-large link',
+                        amount: 10,
+                        color: '#FFFFFF',
+                        callback: function(node) {
+                            app.get_blogger_post("/2015/01/pitchfork-metrics.html",
+                                function(data){
+                                    app.set_content_html(data.content)
+                                })
+                        },
+                        children: []
+                    },
+                    {
+                        label: 'pitchfork npm',
+                        id: 'section_title icon-file icon-large link',
+                        amount: 10,
+                        readmepath: '/md/pitchfork-npm-readme.md',
+                        color: '#FFFFFF',
+                        callback: function(node) {
+                            app.get_blogger_post("/2014/07/pitchfork-api-for-node.html",
+                                function(data){
+                                    app.set_content_html(data.content)
+                                })
+                        },
+                        children: []
+                    },
+                    {
+                        label: 'hubot simpsons',
+                        id: 'section_title icon-file icon-large link',
+                        amount: 10,
+                        color: '#FFFFFF',
+                        readmepath: '/md/thesimpsons-readme.md',
+                        callback: function(node) {
+                            app.get_markdown(this.readmepath, function(md, html){
+                                if (html) {
+                                    app.set_content_html(html);
+                                }
+                            })
+                        },
+                        children: []
+                    },
+                    {
+                        label: 'tonka',
+                        id: 'section_title icon-file icon-large link',
+                        amount: 10,
+                        color: '#FFFFFF',
+                        readmepath: '/md/tonka-readme.md',
+                        callback: function(node) {
+                            app.get_markdown(this.readmepath, function(md, html){
+                                if (html) {
+                                    app.set_content_html(html);
+                                }
+                            })
+                        },
+                        children: []
+                    }
+                ]
+            },
+            { 
                 label: 'info', 
                 id: 'section_title icon-male icon-large',
                 amount: 20,
@@ -254,6 +319,9 @@ app = {
             reposRaw.push(res);
             pageNum+=1;
             $.getJSON("https://api.github.com/users/omardelarosa/repos?page="+pageNum, handleAjax)
+                .fail(function(){
+                    console.log('Github rate limit has likely been hit.')
+                })
         }
 
         function buildRepoNodes() {
@@ -420,6 +488,21 @@ app = {
         app.set_content_html(html);
     },
 
+    get_markdown: function(path, cb) {
+        var md, html;
+        $.get(path)
+            .then(function(data){
+                // calls the cb function with the raw markdown as the 1st arg and html as 2nd
+                md = data;
+                if (marked) {
+                    html = marked(data)
+                } else {
+                   html = null 
+                }
+                cb(data, marked(data))
+            })
+    },
+
     get_blogger_data: function(cb){
         $.getJSON("https://www.googleapis.com/blogger/v3/blogs/3160138467753157166/posts?key=AIzaSyCcC2Lqz8WTFad5T3V5G-Yl-e_sRfopr8k")
             .then(function(data){
@@ -428,6 +511,29 @@ app = {
                 app.build_blogger_nodes(posts, cb)
                 // app.set_content_html(data.items[0].content);
             })
+    },
+
+    get_blogger_post: function(path, cb){
+        if (!path) { return new Error('no path provided!')}
+        var counter = 0;
+        var url = "https://www.googleapis.com/blogger/v3/blogs/3160138467753157166/posts/bypath?key=AIzaSyCcC2Lqz8WTFad5T3V5G-Yl-e_sRfopr8k&path="+path;
+        
+        function fetchContent () {
+            $.getJSON(url)
+                .then(function(data){
+                    cb(data);
+                    console.log("data", data)
+                }).fail(function(err){
+                    console.log("counter", counter);
+                    if (counter < 10) {
+                        fetchContent()
+                        counter += 1;
+                    } else {
+                        console.log('error fetching content')
+                    }
+                })
+        }
+        fetchContent();
     },
 
     build_blogger_nodes: function(posts, cb){
